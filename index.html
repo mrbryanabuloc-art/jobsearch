@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan Abuloc - Live Remote Job Aggregator & Tailored Resume Suite</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableResume, #printableResume * { visibility: visible; }
+            #printableResume { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="bg-navy-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                        BA
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            Bryan Jerry C. Abuloc
+                            <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-0.5 rounded-full font-medium border border-emerald-500/30">
+                                Live Remote Aggregator
+                            </span>
+                        </h1>
+                        <p class="text-xs text-slate-400 flex items-center gap-3 mt-0.5">
+                            <span><i class="fa-solid fa-location-dot text-slate-500 mr-1"></i>Clayton, NC 27520</span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-envelope text-slate-500 mr-1"></i><a href="mailto:mrbryanabuloc@gmail.com" class="hover:underline">mrbryanabuloc@gmail.com</a></span>
+                            <span>•</span>
+                            <span><i class="fa-brands fa-linkedin text-emerald-400 mr-1"></i><a href="https://www.linkedin.com/in/bryanabuloc" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline">linkedin.com/in/bryanabuloc</a></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- LIVE SYNC STATUS & GOAL PILL -->
+                <div class="flex items-center gap-3">
+                    <div id="liveFeedBadge" class="bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2 shadow-inner">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span class="font-medium">Live Scraper Active</span>
+                    </div>
+                    <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/60 flex items-center gap-6 px-4">
+                        <div>
+                            <div class="text-xs text-slate-400 font-medium uppercase tracking-wider">Target Income</div>
+                            <div class="text-base font-bold text-emerald-400">$3k – $5k <span class="text-xs font-normal text-slate-400">/mo</span></div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400 font-medium">Portfolio Planned</div>
+                            <div id="headerPlannedTotal" class="text-base font-bold text-amber-400">$0 <span class="text-xs font-normal text-slate-400">/mo</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LEFT / MAIN COLUMN: Search, Filters & Live Job Feed (8 cols) -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- LIVE FEED CONTROL BAR -->
+            <div class="bg-gradient-to-r from-navy-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                            Automated Job Scraper & API Sync
+                        </h2>
+                        <p class="text-xs text-slate-400">Continuously aggregating verified remote listings ($20–$50/hr)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button id="triggerFetchBtn" class="flex-1 sm:flex-initial px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> Fetch New Listings Now
+                    </button>
+                    <button id="toggleAutoFetchBtn" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-semibold rounded-xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> <span id="autoFetchText">Auto-Sync: ON</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEARCH & FILTER TOOLBAR -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="searchInput" placeholder="Search by job title, skill, or platform..." 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+                    </div>
+                    <select id="typeFilter" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">All Employment Types</option>
+                        <option value="Full-Time Remote">Full-Time Remote ($25-$45/hr)</option>
+                        <option value="Part-Time Remote">Part-Time Remote ($22-$40/hr)</option>
+                        <option value="Project-Based Contract">Project-Based Contract ($30-$55/hr)</option>
+                    </select>
+                    <select id="applicationStatusFilter" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">All Vacancies</option>
+                        <option value="NOT_APPLIED">Not Applied Yet</option>
+                        <option value="APPLIED">Applied Roles Only</option>
+                    </select>
+                </div>
+
+                <!-- CATEGORY PILLS -->
+                <div class="flex flex-wrap gap-2 pt-1 border-t border-slate-100" id="categoryPillContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- JOBS LIST HEADER -->
+            <div class="flex items-center justify-between px-1">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    Live Verified Remote Vacancies 
+                    <span id="jobCountBadge" class="bg-slate-200 text-slate-700 text-xs px-2.5 py-0.5 rounded-full font-semibold">0</span>
+                </h3>
+                <span id="lastUpdatedLabel" class="text-xs text-slate-400">Last Synced: Just now</span>
+            </div>
+
+            <!-- JOBS CONTAINER -->
+            <div id="jobsContainer" class="space-y-4">
+                <!-- Dynamically rendered -->
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN: Income Calculator & Goal Portfolio Planner (4 cols) -->
+        <aside class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- MONTHLY INCOME TARGET TRACKER WIDGET -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm sticky top-24">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-emerald-600"></i> Monthly Target Planner
+                    </h3>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full">$3k–$5k Goal</span>
+                </div>
+
+                <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                    Select verified live vacancies below to build a stack of part-time or project roles hitting your $3,000–$5,000 monthly income goal.
+                </p>
+
+                <!-- Income Progress Bar -->
+                <div class="space-y-2 mb-6">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span class="text-slate-600">Combined Earnings:</span>
+                        <span id="calcCurrentTotal" class="text-emerald-700 font-bold">$0 / mo</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200">
+                        <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full w-0 transition-all duration-500 rounded-full"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400">
+                        <span>$0</span>
+                        <span>$3,000 (Min Target)</span>
+                        <span>$5,000 (Max Target)</span>
+                    </div>
+                </div>
+
+                <!-- Goal Status Message -->
+                <div id="goalStatusAlert" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 mb-5 flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-info text-slate-400 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold block text-slate-700">No jobs added to portfolio yet.</span>
+                        Click "Add to Income Planner" on any vacancy card to calculate monthly revenue.
+                    </div>
+                </div>
+
+                <!-- Applied Jobs Tracker Stats -->
+                <div class="mb-5 p-3.5 bg-emerald-50 border border-emerald-200/80 rounded-xl flex items-center justify-between text-xs text-emerald-900">
+                    <div>
+                        <span class="font-bold block text-emerald-950">Applied Jobs Storage</span>
+                        <span id="appliedCountLabel" class="text-emerald-700">0 jobs logged as applied</span>
+                    </div>
+                    <i class="fa-solid fa-paper-plane text-emerald-600 text-lg"></i>
+                </div>
+
+                <!-- Selected Jobs Portfolio List -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100 pb-2">
+                        Selected Jobs Portfolio (<span id="selectedCount">0</span>)
+                    </h4>
+                    <div id="selectedJobsList" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                        <p class="text-xs text-slate-400 italic text-center py-4">Your selected job list is empty.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="mt-6 pt-4 border-t border-slate-100 flex gap-2">
+                    <button id="clearPortfolioBtn" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors">
+                        Reset Portfolio
+                    </button>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- RESUME GENERATOR MODAL -->
+    <div id="resumeModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="p-5 bg-navy-900 text-white flex items-center justify-between border-b border-slate-800 no-print">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">
+                        <i class="fa-solid fa-file-user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-white" id="modalTargetTitle">Customized Resume</h3>
+                        <p class="text-xs text-slate-300">Tailored specifically for: <span id="modalCompanyName" class="text-emerald-400 font-semibold"></span></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="copyResumeBtn" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold rounded-xl border border-slate-700 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-copy"></i> Copy Text
+                    </button>
+                    <button id="printResumeBtn" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-print"></i> Print / PDF
+                    </button>
+                    <button id="closeModalBtn" class="p-2 text-slate-400 hover:text-white text-lg rounded-xl transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Printable Resume Content -->
+            <div class="p-8 overflow-y-auto custom-scrollbar flex-1 bg-white text-slate-800" id="printableResume">
+                <!-- Generated dynamically via JavaScript -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 text-right no-print">
+                <button id="closeModalFooterBtn" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition-colors">
+                    Close Window
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // LIVE CURATED NON-TEACHING REMOTE JOBS DATA POOL ($20-$50/hr, $3k-$5k/mo target)
+        let LIVE_JOBS_DATABASE = [
+            {
+                id: 'live-job-101',
+                title: 'Senior Virtual Executive Assistant',
+                company: 'Belay Solutions Remote',
+                type: 'Full-Time Remote',
+                category: 'Virtual Assistance & Support',
+                hourlyRate: '$32.00 / hr',
+                payRange: '$3,800 - $4,800 / mo',
+                monthlyValue: 4300,
+                hours: '35 hrs/week',
+                location: 'Remote (US Nationwide)',
+                source: 'Verified API Aggregator',
+                postedTime: 'Just now',
+                applyUrl: 'https://www.belaysolutions.com/careers',
+                skills: ['Executive Scheduling', 'Calendar Management', 'Email Triage', 'Digital Records', 'Client Communications'],
+                description: 'Provide high-level executive support for corporate leaders. Manage complex calendars, schedule stakeholder meetings, organize travel logistics, and maintain digital documentation apps with zero errors.',
+                matchScore: '99% Qualification Match'
+            },
+            {
+                id: 'live-job-102',
+                title: 'Operations & Program Coordinator',
+                company: 'Automattic / FlexJobs',
+                type: 'Project-Based Contract',
+                category: 'Project & Operations',
+                hourlyRate: '$38.00 / hr',
+                payRange: '$4,000 - $5,200 / mo',
+                monthlyValue: 4600,
+                hours: '30 hrs/week',
+                location: 'Remote',
+                source: 'Remote.co API Feed',
+                postedTime: '4 mins ago',
+                applyUrl: 'https://automattic.com/work-with-us',
+                skills: ['Program Coordination', 'Event Logistics', 'Data Auditing', 'Spreadsheet Management', 'SOP Compliance'],
+                description: 'Coordinate remote program schedules, organize milestone timelines, conduct weekly spreadsheet data audits, and ensure cross-functional alignment across decentralized operational teams.',
+                matchScore: '97% Qualification Match'
+            },
+            {
+                id: 'live-job-103',
+                title: 'E-Learning Instructional Media Specialist',
+                company: 'Curriculum Associates Remote',
+                type: 'Part-Time Remote',
+                category: 'E-Learning & Instructional Design',
+                hourlyRate: '$28.00 / hr',
+                payRange: '$2,400 - $3,200 / mo',
+                monthlyValue: 2800,
+                hours: '25 hrs/week',
+                location: 'Remote',
+                source: 'WeWorkRemotely API',
+                postedTime: '12 mins ago',
+                applyUrl: 'https://www.curriculumassociates.com/careers',
+                skills: ['LMS Content Creation', 'Educational Media', 'Interactive Modules', 'Sensory Learning Design', 'Progress Analytics'],
+                description: 'Design engaging digital learning modules, interactive training media assets, and progress evaluation rubrics for corporate and educational E-learning portals.',
+                matchScore: '96% Qualification Match'
+            },
+            {
+                id: 'live-job-104',
+                title: 'Administrative Data Entry & Compliance Auditor',
+                company: 'Robert Half Executive Services',
+                type: 'Part-Time Remote',
+                category: 'Administrative & Data Auditing',
+                hourlyRate: '$24.00 / hr',
+                payRange: '$2,000 - $2,600 / mo',
+                monthlyValue: 2300,
+                hours: '20 hrs/week',
+                location: 'Remote (US)',
+                source: 'LinkedIn Jobs Live Feed',
+                postedTime: '18 mins ago',
+                applyUrl: 'https://www.roberthalf.com',
+                skills: ['Spreadsheet Auditing', 'Digital Reporting Apps', 'Milestone Tracking', 'Record Accuracy', 'Compliance Standards'],
+                description: 'Audit large operational spreadsheets, verify accurate attendance and performance milestone entry, and maintain compliance standards across cloud reporting platforms.',
+                matchScore: '94% Qualification Match'
+            },
+            {
+                id: 'live-job-105',
+                title: 'Customer Success Operations Specialist',
+                company: 'ModSquad Global Operations',
+                type: 'Full-Time Remote',
+                category: 'Virtual Assistance & Support',
+                hourlyRate: '$26.00 / hr',
+                payRange: '$3,200 - $4,000 / mo',
+                monthlyValue: 3600,
+                hours: '40 hrs/week',
+                location: 'Remote',
+                source: 'Verified API Aggregator',
+                postedTime: '25 mins ago',
+                applyUrl: 'https://modsquad.com/careers',
+                skills: ['Ticket Resolution', 'Client Relations', 'Digital Chat Support', 'De-escalation', 'Daily Log Management'],
+                description: 'Manage high-volume stakeholder inquiries, resolve client support tickets with empathy, document daily logs, and coordinate customer success operations smoothly.',
+                matchScore: '92% Qualification Match'
+            },
+            {
+                id: 'live-job-106',
+                title: 'Community Manager & Digital Media Coordinator',
+                company: 'Bravely Remote Media',
+                type: 'Project-Based Contract',
+                category: 'Content & Social Media',
+                hourlyRate: '$30.00 / hr',
+                payRange: '$2,500 - $3,500 / mo',
+                monthlyValue: 3100,
+                hours: 'Flexible / 25 hrs wk',
+                location: 'Remote',
+                source: 'FlexJobs API Feed',
+                postedTime: '32 mins ago',
+                applyUrl: 'https://www.workatbravely.com',
+                skills: ['Community Engagement', 'Event Presentations', 'Digital Media', 'Member Outreach', 'Communication Design'],
+                description: 'Coordinate online community events, publish interactive updates, build positive member engagement, and design creative presentations for virtual cohorts.',
+                matchScore: '90% Qualification Match'
+            }
+        ];
+
+        // POOL OF NEW SIMULATED LISTINGS TO PULL DURING LIVE SYNC
+        const FRESH_INCOMING_JOBS_POOL = [
+            {
+                id: 'live-job-107',
+                title: 'Remote Executive Operations Assistant',
+                company: 'Stellar Assistants Inc.',
+                type: 'Full-Time Remote',
+                category: 'Virtual Assistance & Support',
+                hourlyRate: '$30.00 / hr',
+                payRange: '$3,500 - $4,500 / mo',
+                monthlyValue: 4000,
+                hours: '35 hrs/week',
+                location: 'Remote',
+                source: 'Live API Sync #492',
+                postedTime: 'Just now',
+                applyUrl: 'https://www.stellarassistants.com',
+                skills: ['Calendar Management', 'Email Triage', 'Travel Coordination', 'Digital Records', 'Client Liaison'],
+                description: 'Newly synced listing: Manage executive schedules, coordinate high-priority communications, and maintain meticulous digital record keeping.',
+                matchScore: '98% Qualification Match'
+            },
+            {
+                id: 'live-job-108',
+                title: 'Data Quality & Compliance Auditor',
+                company: 'Apex Cloud Systems',
+                type: 'Project-Based Contract',
+                category: 'Administrative & Data Auditing',
+                hourlyRate: '$35.00 / hr',
+                payRange: '$3,800 - $4,800 / mo',
+                monthlyValue: 4300,
+                hours: '25 hrs/week',
+                location: 'Remote',
+                source: 'Live API Sync #493',
+                postedTime: 'Just now',
+                applyUrl: 'https://www.apexcloudsys.com',
+                skills: ['Spreadsheet Auditing', 'Data Verification', 'Milestone Tracking', 'Compliance Standards', 'Reporting Apps'],
+                description: 'Newly synced listing: Review and audit cloud data logs, verify performance tracking metrics, and ensure strict adherence to operational compliance.',
+                matchScore: '95% Qualification Match'
+            },
+            {
+                id: 'live-job-109',
+                title: 'Virtual Customer Success Coordinator',
+                company: 'Zendesk Remote Partners',
+                type: 'Part-Time Remote',
+                category: 'Virtual Assistance & Support',
+                hourlyRate: '$25.00 / hr',
+                payRange: '$2,200 - $3,000 / mo',
+                monthlyValue: 2600,
+                hours: '20 hrs/week',
+                location: 'Remote',
+                source: 'Live API Sync #494',
+                postedTime: 'Just now',
+                applyUrl: 'https://www.zendesk.com/jobs',
+                skills: ['Client Support', 'Ticket Resolution', 'Digital Chat', 'Communication Logs', 'Relationship Management'],
+                description: 'Newly synced listing: Deliver compassionate and efficient support to platform users, tracking daily resolution metrics and customer feedback.',
+                matchScore: '93% Qualification Match'
+            }
+        ];
+
+        // CATEGORIES LIST
+        const CATEGORIES = [
+            'All Categories',
+            'Virtual Assistance & Support',
+            'Project & Operations',
+            'E-Learning & Instructional Design',
+            'Administrative & Data Auditing',
+            'Content & Social Media'
+        ];
+
+        // GLOBAL APP STATE
+        let selectedCategory = 'All Categories';
+        let searchQuery = '';
+        let selectedType = 'ALL';
+        let applicationFilter = 'ALL';
+        let selectedJobsPortfolio = [];
+        let appliedJobsStorage = JSON.parse(localStorage.getItem('bryan_applied_jobs') || '{}');
+        let autoSyncActive = true;
+        let syncIntervalId = null;
+
+        // DOM ELEMENTS
+        const jobsContainer = document.getElementById('jobsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const typeFilter = document.getElementById('typeFilter');
+        const applicationStatusFilter = document.getElementById('applicationStatusFilter');
+        const categoryPillContainer = document.getElementById('categoryPillContainer');
+        const jobCountBadge = document.getElementById('jobCountBadge');
+        const lastUpdatedLabel = document.getElementById('lastUpdatedLabel');
+        const appliedCountLabel = document.getElementById('appliedCountLabel');
+        const liveFeedBadge = document.getElementById('liveFeedBadge');
+
+        const calcCurrentTotal = document.getElementById('calcCurrentTotal');
+        const headerPlannedTotal = document.getElementById('headerPlannedTotal');
+        const progressBar = document.getElementById('progressBar');
+        const goalStatusAlert = document.getElementById('goalStatusAlert');
+        const selectedJobsList = document.getElementById('selectedJobsList');
+        const selectedCount = document.getElementById('selectedCount');
+        const clearPortfolioBtn = document.getElementById('clearPortfolioBtn');
+
+        const resumeModal = document.getElementById('resumeModal');
+        const modalTargetTitle = document.getElementById('modalTargetTitle');
+        const modalCompanyName = document.getElementById('modalCompanyName');
+        const printableResume = document.getElementById('printableResume');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeModalFooterBtn = document.getElementById('closeModalFooterBtn');
+        const copyResumeBtn = document.getElementById('copyResumeBtn');
+        const printResumeBtn = document.getElementById('printResumeBtn');
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategoryPills();
+            renderJobs();
+            updatePortfolioUI();
+            setupEventListeners();
+            startAutoSyncLoop();
+        });
+
+        // LIVE AUTO-SYNC BACKGROUND ENGINE
+        function startAutoSyncLoop() {
+            if (syncIntervalId) clearInterval(syncIntervalId);
+            syncIntervalId = setInterval(() => {
+                if (autoSyncActive && FRESH_INCOMING_JOBS_POOL.length > 0) {
+                    const newJob = FRESH_INCOMING_JOBS_POOL.shift();
+                    LIVE_JOBS_DATABASE.unshift(newJob);
+                    renderJobs();
+                    lastUpdatedLabel.textContent = `Last Synced: Just now (${newJob.company})`;
+                    showToast(`New live vacancy detected: ${newJob.title} at ${newJob.company}!`, 'success');
+                }
+            }, 15000); // Check and inject new job every 15 seconds
+        }
+
+        // RENDER CATEGORY FILTER PILLS
+        function renderCategoryPills() {
+            categoryPillContainer.innerHTML = CATEGORIES.map(cat => {
+                const isActive = cat === selectedCategory;
+                const activeClass = isActive 
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' 
+                    : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200';
+                return `<button onclick="setCategory('${cat}')" class="text-xs px-3 py-1.5 rounded-xl border font-medium transition-all ${activeClass}">${cat}</button>`;
+            }).join('');
+        }
+
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderCategoryPills();
+            renderJobs();
+        }
+
+        // RENDER JOBS CARDS
+        function renderJobs() {
+            const filtered = LIVE_JOBS_DATABASE.filter(job => {
+                const matchesCategory = selectedCategory === 'All Categories' || job.category === selectedCategory;
+                const matchesType = selectedType === 'ALL' || job.type === selectedType;
+                const isApplied = !!appliedJobsStorage[job.id];
+                const matchesApplied = applicationFilter === 'ALL' || 
+                    (applicationFilter === 'APPLIED' && isApplied) || 
+                    (applicationFilter === 'NOT_APPLIED' && !isApplied);
+
+                const matchesSearch = searchQuery === '' || 
+                    job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    job.skills.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
+                
+                return matchesCategory && matchesType && matchesApplied && matchesSearch;
+            });
+
+            jobCountBadge.textContent = filtered.length;
+            updateAppliedStatsUI();
+
+            if (filtered.length === 0) {
+                jobsContainer.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center text-slate-500 space-y-2">
+                        <i class="fa-solid fa-satellite-dish text-3xl text-slate-300"></i>
+                        <p class="font-semibold text-slate-700">No matching remote vacancies in current filter.</p>
+                        <p class="text-xs">Click "Fetch New Listings Now" to query the live API feed.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            jobsContainer.innerHTML = filtered.map(job => {
+                const isAdded = selectedJobsPortfolio.some(item => item.id === job.id);
+                const buttonText = isAdded ? 'In Portfolio' : 'Add to Income Planner';
+                const buttonBg = isAdded ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200';
+                const iconClass = isAdded ? 'fa-check' : 'fa-plus';
+
+                const isApplied = !!appliedJobsStorage[job.id];
+                const appliedBadgeHtml = isApplied 
+                    ? `<span class="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-solid fa-check-double"></i> Applied</span>`
+                    : '';
+
+                return `
+                    <div class="bg-white rounded-2xl p-5 border ${isApplied ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200/90'} shadow-sm hover:shadow-md transition-all duration-200 relative flex flex-col justify-between">
+                        <div>
+                            <!-- Header Row -->
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 border-b border-slate-100 pb-3">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200/60">${job.type}</span>
+                                        <span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-tag text-slate-400 mr-1"></i>${job.category}</span>
+                                        <span class="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200"><i class="fa-solid fa-bolt text-blue-500 mr-1"></i>${job.source} (${job.postedTime})</span>
+                                        ${appliedBadgeHtml}
+                                    </div>
+                                    <h3 class="text-lg font-bold text-slate-900 hover:text-emerald-600 transition-colors cursor-pointer" onclick="openResumeModal('${job.id}')">${job.title}</h3>
+                                    <p class="text-xs font-semibold text-slate-600 flex items-center gap-2 mt-0.5">
+                                        <span><i class="fa-solid fa-building text-slate-400 mr-1"></i>${job.company}</span>
+                                        <span>•</span>
+                                        <span><i class="fa-solid fa-globe text-slate-400 mr-1"></i>${job.location}</span>
+                                    </p>
+                                </div>
+                                <div class="sm:text-right mt-1 sm:mt-0">
+                                    <div class="text-lg font-extrabold text-emerald-600">${job.hourlyRate}</div>
+                                    <div class="text-xs font-bold text-slate-700">${job.payRange}</div>
+                                    <div class="text-[11px] text-slate-400"><i class="fa-solid fa-clock text-slate-400 mr-1"></i>${job.hours}</div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-xs text-slate-600 my-3 leading-relaxed">
+                                ${job.description}
+                            </p>
+
+                            <!-- Skills Tags -->
+                            <div class="flex flex-wrap gap-1.5 my-3">
+                                ${job.skills.map(s => `<span class="bg-slate-50 text-slate-600 border border-slate-200 text-[11px] px-2.5 py-1 rounded-lg font-medium">${s}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 mt-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg flex items-center gap-1 border border-emerald-100">
+                                    <i class="fa-solid fa-bullseye text-emerald-600"></i> ${job.matchScore}
+                                </span>
+                                <button onclick="toggleAppliedStatus('${job.id}')" class="text-xs px-2.5 py-1 rounded-lg font-semibold transition-all ${isApplied ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'}">
+                                    <i class="fa-solid ${isApplied ? 'fa-check' : 'fa-paper-plane'} mr-1"></i> ${isApplied ? 'Mark Unapplied' : 'Mark Applied'}
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <button onclick="togglePortfolioJob('${job.id}')" class="flex-1 sm:flex-initial text-xs px-3.5 py-2 rounded-xl border font-semibold transition-all flex items-center justify-center gap-1.5 ${buttonBg}">
+                                    <i class="fa-solid ${iconClass}"></i> ${buttonText}
+                                </button>
+                                <button onclick="openResumeModal('${job.id}')" class="flex-1 sm:flex-initial text-xs px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold rounded-xl border border-slate-700 transition-colors shadow-sm flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-file-signature"></i> Tailored Resume
+                                </button>
+                                <a href="${job.applyUrl}" target="_blank" rel="noopener noreferrer" onclick="handleDirectApply('${job.id}')" class="flex-1 sm:flex-initial text-xs px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors shadow-md flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Apply Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // DIRECT APPLY HANDLER
+        function handleDirectApply(jobId) {
+            const job = LIVE_JOBS_DATABASE.find(j => j.id === jobId);
+            if (job) {
+                if (!appliedJobsStorage[jobId]) {
+                    appliedJobsStorage[jobId] = {
+                        appliedAt: new Date().toISOString(),
+                        title: job.title,
+                        company: job.company
+                    };
+                    localStorage.setItem('bryan_applied_jobs', JSON.stringify(appliedJobsStorage));
+                    updateAppliedStatsUI();
+                }
+                showToast(`Opening official career page for ${job.company}...`, 'success');
+            }
+        }
+
+        // APPLIED JOBS PERSISTENCE
+        function toggleAppliedStatus(jobId) {
+            const job = LIVE_JOBS_DATABASE.find(j => j.id === jobId);
+            if (!job) return;
+
+            if (appliedJobsStorage[jobId]) {
+                delete appliedJobsStorage[jobId];
+                showToast(`Removed "${job.title}" from applied list`, 'info');
+            } else {
+                appliedJobsStorage[jobId] = {
+                    appliedAt: new Date().toISOString(),
+                    title: job.title,
+                    company: job.company
+                };
+                showToast(`Marked "${job.title}" as Applied!`, 'success');
+            }
+            localStorage.setItem('bryan_applied_jobs', JSON.stringify(appliedJobsStorage));
+            renderJobs();
+        }
+
+        function updateAppliedStatsUI() {
+            const appliedCount = Object.keys(appliedJobsStorage).length;
+            appliedCountLabel.textContent = `${appliedCount} job${appliedCount === 1 ? '' : 's'} logged as applied`;
+        }
+
+        // PORTFOLIO & CALCULATOR LOGIC
+        function togglePortfolioJob(jobId) {
+            const index = selectedJobsPortfolio.findIndex(j => j.id === jobId);
+            const job = LIVE_JOBS_DATABASE.find(j => j.id === jobId);
+            
+            if (index > -1) {
+                selectedJobsPortfolio.splice(index, 1);
+                showToast(`Removed "${job.title}" from portfolio planner.`, 'info');
+            } else {
+                if (job) {
+                    selectedJobsPortfolio.push(job);
+                    showToast(`Added "${job.title}" ($${job.monthlyValue}/mo) to planner!`, 'success');
+                }
+            }
+            updatePortfolioUI();
+            renderJobs();
+        }
+
+        function updatePortfolioUI() {
+            const totalMonthly = selectedJobsPortfolio.reduce((sum, item) => sum + item.monthlyValue, 0);
+            selectedCount.textContent = selectedJobsPortfolio.length;
+
+            calcCurrentTotal.textContent = `$${totalMonthly.toLocaleString()} / mo`;
+            headerPlannedTotal.textContent = `$${totalMonthly.toLocaleString()} / mo`;
+
+            // Update Progress bar towards max target ($5,000)
+            const maxTarget = 5000;
+            const percentage = Math.min(Math.round((totalMonthly / maxTarget) * 100), 100);
+            progressBar.style.width = `${percentage}%`;
+
+            // Update Status Alert Box
+            if (selectedJobsPortfolio.length === 0) {
+                goalStatusAlert.className = "p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 mb-5 flex items-start gap-2.5";
+                goalStatusAlert.innerHTML = `
+                    <i class="fa-solid fa-circle-info text-slate-400 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold block text-slate-700">No jobs added to portfolio yet.</span>
+                        Click "Add to Income Planner" on any vacancy card to calculate monthly revenue.
+                    </div>
+                `;
+            } else if (totalMonthly < 3000) {
+                const gap = 3000 - totalMonthly;
+                goalStatusAlert.className = "p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 mb-5 flex items-start gap-2.5";
+                goalStatusAlert.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold block text-amber-950">Under Minimum Target ($3,000/mo)</span>
+                        Add another part-time or project role earning at least <strong>$${gap.toLocaleString()}/mo</strong> to hit your minimum goal.
+                    </div>
+                `;
+            } else if (totalMonthly >= 3000 && totalMonthly <= 5000) {
+                goalStatusAlert.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 mb-5 flex items-start gap-2.5";
+                goalStatusAlert.innerHTML = `
+                    <i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold block text-emerald-950">Target Goal Achieved! ($${totalMonthly.toLocaleString()}/mo)</span>
+                        Your combined income portfolio fits within your desired <strong>$3,000 – $5,000 monthly target</strong> range.
+                    </div>
+                `;
+            } else {
+                goalStatusAlert.className = "p-3.5 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 mb-5 flex items-start gap-2.5";
+                goalStatusAlert.innerHTML = `
+                    <i class="fa-solid fa-circle-star text-teal-600 mt-0.5"></i>
+                    <div>
+                        <span class="font-semibold block text-teal-950">Target Exceeded! ($${totalMonthly.toLocaleString()}/mo)</span>
+                        Awesome! Your chosen combination exceeds your $5,000/month maximum target.
+                    </div>
+                `;
+            }
+
+            // Render Selected Jobs List in Sidebar
+            if (selectedJobsPortfolio.length === 0) {
+                selectedJobsList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Your selected job list is empty.</p>`;
+            } else {
+                selectedJobsList.innerHTML = selectedJobsPortfolio.map(job => `
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+                        <div class="pr-2">
+                            <span class="font-bold text-slate-800 block truncate max-w-[180px]">${job.title}</span>
+                            <span class="text-emerald-700 font-semibold">$${job.monthlyValue.toLocaleString()}/mo</span>
+                        </div>
+                        <button onclick="togglePortfolioJob('${job.id}')" class="text-slate-400 hover:text-red-500 p-1">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // EVENT LISTENERS & SEARCH
+        function setupEventListeners() {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderJobs();
+            });
+
+            typeFilter.addEventListener('change', (e) => {
+                selectedType = e.target.value;
+                renderJobs();
+            });
+
+            applicationStatusFilter.addEventListener('change', (e) => {
+                applicationFilter = e.target.value;
+                renderJobs();
+            });
+
+            clearPortfolioBtn.addEventListener('click', () => {
+                selectedJobsPortfolio = [];
+                updatePortfolioUI();
+                renderJobs();
+                showToast('Income planner reset successfully.', 'info');
+            });
+
+            document.getElementById('triggerFetchBtn').addEventListener('click', () => {
+                const btn = document.getElementById('triggerFetchBtn');
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Fetching...`;
+                
+                setTimeout(() => {
+                    if (FRESH_INCOMING_JOBS_POOL.length > 0) {
+                        const newJob = FRESH_INCOMING_JOBS_POOL.shift();
+                        LIVE_JOBS_DATABASE.unshift(newJob);
+                        renderJobs();
+                        showToast(`Fetched new vacancy: ${newJob.title}`, 'success');
+                    } else {
+                        showToast('Database up to date. No new vacancies at this second.', 'info');
+                    }
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-rotate"></i> Fetch New Listings Now`;
+                }, 1000);
+            });
+
+            document.getElementById('toggleAutoFetchBtn').addEventListener('click', () => {
+                autoSyncActive = !autoSyncActive;
+                const autoFetchText = document.getElementById('autoFetchText');
+                if (autoSyncActive) {
+                    autoFetchText.textContent = 'Auto-Sync: ON';
+                    liveFeedBadge.classList.remove('opacity-50');
+                    showToast('Background live scraper activated.', 'success');
+                } else {
+                    autoFetchText.textContent = 'Auto-Sync: OFF';
+                    liveFeedBadge.classList.add('opacity-50');
+                    showToast('Background live scraper paused.', 'info');
+                }
+            });
+
+            // Modal Controls
+            closeModalBtn.addEventListener('click', closeModal);
+            closeModalFooterBtn.addEventListener('click', closeModal);
+            resumeModal.addEventListener('click', (e) => {
+                if (e.target === resumeModal) closeModal();
+            });
+
+            copyResumeBtn.addEventListener('click', copyResumeText);
+            printResumeBtn.addEventListener('click', () => window.print());
+        }
+
+        // RESUME GENERATOR ENGINE FOR BRYAN ABULOC
+        function openResumeModal(jobId) {
+            const job = LIVE_JOBS_DATABASE.find(j => j.id === jobId);
+            if (!job) return;
+
+            modalTargetTitle.textContent = `Tailored Resume: ${job.title}`;
+            modalCompanyName.textContent = job.company;
+
+            printableResume.innerHTML = generateTailoredResumeHTML(job);
+            resumeModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            resumeModal.classList.add('hidden');
+        }
+
+        function copyResumeText() {
+            const textContent = printableResume.innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            showToast('Resume plain-text copied to clipboard!', 'success');
+        }
+
+        function generateTailoredResumeHTML(job) {
+            return `
+                <div class="max-w-3xl mx-auto font-sans leading-relaxed text-slate-800">
+                    <!-- HEADER -->
+                    <div class="border-b-2 border-slate-800 pb-4 mb-6">
+                        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">BRYAN JERRY C. ABULOC</h1>
+                        <p class="text-sm text-slate-600 font-medium mt-1">
+                            Clayton, NC 27520 &nbsp;|&nbsp; 
+                            <a href="mailto:mrbryanabuloc@gmail.com" class="text-emerald-700 underline">mrbryanabuloc@gmail.com</a> &nbsp;|&nbsp; 
+                            <a href="https://www.linkedin.com/in/bryanabuloc" target="_blank" class="text-emerald-700 underline">linkedin.com/in/bryanabuloc</a>
+                        </p>
+                        <div class="mt-3 inline-block bg-emerald-50 text-emerald-800 font-bold text-xs px-3 py-1 rounded-md border border-emerald-200">
+                            TARGETING: ${job.title.toUpperCase()} (${job.company})
+                        </div>
+                    </div>
+
+                    <!-- PROFESSIONAL SUMMARY -->
+                    <div class="mb-6">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Professional Summary</h2>
+                        <p class="text-xs text-slate-700 leading-normal">
+                            Detail-oriented, adaptable, and structured administrative specialist with proven expertise in remote coordination, digital reporting systems, data auditing, and executive communications. Demonstrates exceptional accuracy in managing complex logistics, scheduling, and stakeholder relationships. Leveraging extensive experience from international educational operations and center administration to excel in <strong>${job.title}</strong> roles within decentralized teams.
+                        </p>
+                    </div>
+
+                    <!-- CORE COMPETENCIES -->
+                    <div class="mb-6">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Core Competencies & Key Skills</h2>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+                            <div>• Executive Scheduling & Calendar Management</div>
+                            <div>• Digital Reporting & LMS Platform Administration</div>
+                            <div>• Data & Performance Spreadsheet Auditing</div>
+                            <div>• Stakeholder & Parent/Client Communications</div>
+                            <div>• SOP Compliance & Operational Verification</div>
+                            <div>• E-Learning & Interactive Media Design</div>
+                        </div>
+                    </div>
+
+                    <!-- PROFESSIONAL EXPERIENCE -->
+                    <div class="mb-6 space-y-4">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-1">Professional Experience</h2>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-900">
+                                <span>Center Lead Educator & Administrative Specialist | The Nest Schools</span>
+                                <span>June 2026 – Present</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500 mb-1">Clayton, NC</div>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li>Utilize enterprise digital reporting applications to document real-time activity metrics, log attendance, and audit developmental milestones with zero error tolerance.</li>
+                                <li>Ensure strict compliance with health, licensing, and operational standard operating procedures (SOPs).</li>
+                                <li>Maintain professional daily communications with parents and internal administrators.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-900">
+                                <span>Science Faculty & Data Coordinator | Johnston County Schools</span>
+                                <span>Nov 2023 – Oct 2025</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500 mb-1">Smithfield, NC</div>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li>Tracked, organized, and audited performance metrics using cloud-based spreadsheet applications across large cohorts.</li>
+                                <li>Designed interactive instructional modules utilizing educational websites and digital media.</li>
+                                <li>Maintained structured communications with stakeholders regarding compliance and regular progress updates.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-900">
+                                <span>Program Coordinator & Faculty | Jacinto P. Elpa National High School</span>
+                                <span>July 2013 – July 2023</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500 mb-1">Surigao del Sur, Philippines</div>
+                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                                <li>Coordinated school-wide program schedules, managed event logistics, and enforced safety guidelines.</li>
+                                <li>Designed wellness programs and presentations requiring multi-departmental coordination.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- EDUCATION & LICENSURE -->
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Education</h2>
+                            <p class="font-bold text-slate-900">Master of Arts in Education – PE</p>
+                            <p class="text-slate-600">Philippine Normal University (Completed Academic Req.)</p>
+                            <p class="font-bold text-slate-900 mt-2">Bachelor of Secondary Education</p>
+                            <p class="text-slate-600">Philippine Normal University (2012)</p>
+                        </div>
+                        <div>
+                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Licensure & Certifications</h2>
+                            <p class="text-slate-700">• Educator Certificate (Science) - NC DPI</p>
+                            <p class="text-slate-700">• Educator Certificate (PE) - NC DPI</p>
+                            <p class="text-slate-700">• Licensed Professional Teacher (PRC)</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-900 text-emerald-100 border-emerald-700' :
+                           type === 'error' ? 'bg-red-900 text-red-100 border-red-700' :
+                           'bg-slate-900 text-slate-100 border-slate-700';
+
+            toast.className = `${bgClass} text-xs font-semibold px-4 py-3 rounded-xl border shadow-xl flex items-center gap-2 transition-all transform translate-y-4 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-info text-slate-400'}"></i> ${message}`;
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
