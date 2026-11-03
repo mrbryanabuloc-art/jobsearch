@@ -47,18 +47,46 @@
             50% { opacity: 0.4; }
         }
         .animate-pulse-slow { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* PRINT SETTINGS FOR 1-PAGE EXACT FIT WITHOUT HEADERS & FOOTERS */
         @media print {
-            body * { visibility: hidden; }
-            #printableResume, #printableResume * { visibility: visible; }
-            #printableResume { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
-            .no-print { display: none !important; }
+            @page {
+                size: letter;
+                margin: 0.4in; /* Clean 1-page margins, disables default browser headers/footers */
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #printableResume, #printableResume * {
+                visibility: visible;
+            }
+            #printableResume {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            /* Prevent unwanted multi-page breaks */
+            .resume-section {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col">
 
     <!-- TOP HEADER / NAVBAR -->
-    <header class="bg-navy-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl">
+    <header class="bg-navy-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center space-x-3">
@@ -104,7 +132,7 @@
     </header>
 
     <!-- MAIN BODY -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 no-print">
         
         <!-- LEFT / MAIN COLUMN: Search, Filters & Live Job Feed (8 cols) -->
         <section class="lg:col-span-8 flex flex-col gap-6">
@@ -248,40 +276,40 @@
 
     <!-- RESUME GENERATOR MODAL -->
     <div id="resumeModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
             
             <!-- Modal Header -->
-            <div class="p-5 bg-navy-900 text-white flex items-center justify-between border-b border-slate-800 no-print">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between border-b border-slate-800 no-print">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-base">
                         <i class="fa-solid fa-file-user"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg text-white" id="modalTargetTitle">Customized Resume</h3>
+                        <h3 class="font-bold text-base text-white" id="modalTargetTitle">Customized Resume</h3>
                         <p class="text-xs text-slate-300">Tailored specifically for: <span id="modalCompanyName" class="text-emerald-400 font-semibold"></span></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="copyResumeBtn" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold rounded-xl border border-slate-700 transition-colors flex items-center gap-1.5">
+                    <button id="copyResumeBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-semibold rounded-xl border border-slate-700 transition-colors flex items-center gap-1.5">
                         <i class="fa-solid fa-copy"></i> Copy Text
                     </button>
-                    <button id="printResumeBtn" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-print"></i> Print / PDF
+                    <button id="printResumeBtn" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-colors flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-file-pdf"></i> Save PDF / Print
                     </button>
-                    <button id="closeModalBtn" class="p-2 text-slate-400 hover:text-white text-lg rounded-xl transition-colors">
+                    <button id="closeModalBtn" class="p-1.5 text-slate-400 hover:text-white text-lg rounded-xl transition-colors">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Modal Printable Resume Content -->
-            <div class="p-8 overflow-y-auto custom-scrollbar flex-1 bg-white text-slate-800" id="printableResume">
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white text-slate-800" id="printableResume">
                 <!-- Generated dynamically via JavaScript -->
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-200 text-right no-print">
-                <button id="closeModalFooterBtn" class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition-colors">
+            <div class="p-3 bg-slate-50 border-t border-slate-200 text-right no-print">
+                <button id="closeModalFooterBtn" class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition-colors">
                     Close Window
                 </button>
             </div>
@@ -289,7 +317,7 @@
     </div>
 
     <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none no-print"></div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
@@ -405,7 +433,6 @@
             }
         ];
 
-        // POOL OF NEW SIMULATED LISTINGS TO PULL DURING LIVE SYNC
         const FRESH_INCOMING_JOBS_POOL = [
             {
                 id: 'live-job-107',
@@ -442,28 +469,9 @@
                 skills: ['Spreadsheet Auditing', 'Data Verification', 'Milestone Tracking', 'Compliance Standards', 'Reporting Apps'],
                 description: 'Newly synced listing: Review and audit cloud data logs, verify performance tracking metrics, and ensure strict adherence to operational compliance.',
                 matchScore: '95% Qualification Match'
-            },
-            {
-                id: 'live-job-109',
-                title: 'Virtual Customer Success Coordinator',
-                company: 'Zendesk Remote Partners',
-                type: 'Part-Time Remote',
-                category: 'Virtual Assistance & Support',
-                hourlyRate: '$25.00 / hr',
-                payRange: '$2,200 - $3,000 / mo',
-                monthlyValue: 2600,
-                hours: '20 hrs/week',
-                location: 'Remote',
-                source: 'Live API Sync #494',
-                postedTime: 'Just now',
-                applyUrl: 'https://www.zendesk.com/jobs',
-                skills: ['Client Support', 'Ticket Resolution', 'Digital Chat', 'Communication Logs', 'Relationship Management'],
-                description: 'Newly synced listing: Deliver compassionate and efficient support to platform users, tracking daily resolution metrics and customer feedback.',
-                matchScore: '93% Qualification Match'
             }
         ];
 
-        // CATEGORIES LIST
         const CATEGORIES = [
             'All Categories',
             'Virtual Assistance & Support',
@@ -531,7 +539,7 @@
                     lastUpdatedLabel.textContent = `Last Synced: Just now (${newJob.company})`;
                     showToast(`New live vacancy detected: ${newJob.title} at ${newJob.company}!`, 'success');
                 }
-            }, 15000); // Check and inject new job every 15 seconds
+            }, 15000);
         }
 
         // RENDER CATEGORY FILTER PILLS
@@ -725,12 +733,10 @@
             calcCurrentTotal.textContent = `$${totalMonthly.toLocaleString()} / mo`;
             headerPlannedTotal.textContent = `$${totalMonthly.toLocaleString()} / mo`;
 
-            // Update Progress bar towards max target ($5,000)
             const maxTarget = 5000;
             const percentage = Math.min(Math.round((totalMonthly / maxTarget) * 100), 100);
             progressBar.style.width = `${percentage}%`;
 
-            // Update Status Alert Box
             if (selectedJobsPortfolio.length === 0) {
                 goalStatusAlert.className = "p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 mb-5 flex items-start gap-2.5";
                 goalStatusAlert.innerHTML = `
@@ -770,7 +776,6 @@
                 `;
             }
 
-            // Render Selected Jobs List in Sidebar
             if (selectedJobsPortfolio.length === 0) {
                 selectedJobsList.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Your selected job list is empty.</p>`;
             } else {
@@ -856,7 +861,7 @@
             printResumeBtn.addEventListener('click', () => window.print());
         }
 
-        // RESUME GENERATOR ENGINE FOR BRYAN ABULOC
+        // RESUME GENERATOR ENGINE FOR BRYAN ABULOC (COMPACT 1-PAGE FORM-FACTOR)
         function openResumeModal(jobId) {
             const job = LIVE_JOBS_DATABASE.find(j => j.id === jobId);
             if (!job) return;
@@ -885,92 +890,92 @@
 
         function generateTailoredResumeHTML(job) {
             return `
-                <div class="max-w-3xl mx-auto font-sans leading-relaxed text-slate-800">
+                <div class="max-w-3xl mx-auto font-sans leading-tight text-slate-800 text-[11px]">
                     <!-- HEADER -->
-                    <div class="border-b-2 border-slate-800 pb-4 mb-6">
-                        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">BRYAN JERRY C. ABULOC</h1>
-                        <p class="text-sm text-slate-600 font-medium mt-1">
+                    <div class="border-b border-slate-800 pb-2 mb-3 text-center sm:text-left">
+                        <h1 class="text-xl font-black text-slate-900 tracking-tight uppercase">BRYAN JERRY C. ABULOC</h1>
+                        <p class="text-[10px] text-slate-600 font-medium mt-0.5">
                             Clayton, NC 27520 &nbsp;|&nbsp; 
-                            <a href="mailto:mrbryanabuloc@gmail.com" class="text-emerald-700 underline">mrbryanabuloc@gmail.com</a> &nbsp;|&nbsp; 
-                            <a href="https://www.linkedin.com/in/bryanabuloc" target="_blank" class="text-emerald-700 underline">linkedin.com/in/bryanabuloc</a>
+                            <a href="mailto:mrbryanabuloc@gmail.com" class="text-emerald-700 underline font-semibold">mrbryanabuloc@gmail.com</a> &nbsp;|&nbsp; 
+                            <a href="https://www.linkedin.com/in/bryanabuloc" target="_blank" class="text-emerald-700 underline font-semibold">linkedin.com/in/bryanabuloc</a>
                         </p>
                     </div>
 
                     <!-- PROFESSIONAL SUMMARY -->
-                    <div class="mb-6">
-                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Professional Summary</h2>
-                        <p class="text-xs text-slate-700 leading-normal">
-                            Detail-oriented, adaptable, and structured administrative specialist with proven expertise in remote coordination, digital reporting systems, data auditing, and executive communications. Demonstrates exceptional accuracy in managing complex logistics, scheduling, and stakeholder relationships. Leveraging extensive experience from international educational operations and center administration to excel in <strong>${job.title}</strong> roles within decentralized teams.
+                    <div class="mb-3 resume-section">
+                        <h2 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-0.5 mb-1">Professional Summary</h2>
+                        <p class="text-slate-700 leading-snug">
+                            Detail-oriented, adaptable administrative and operational specialist with expertise in remote program coordination, digital reporting systems, spreadsheet auditing, and executive communications. Demonstrates accuracy in managing logistics and stakeholder relations. Leveraging extensive background from international operations and center administration to excel in <strong>${job.title}</strong> roles within decentralized teams.
                         </p>
                     </div>
 
                     <!-- CORE COMPETENCIES -->
-                    <div class="mb-6">
-                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Core Competencies & Key Skills</h2>
-                        <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+                    <div class="mb-3 resume-section">
+                        <h2 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-0.5 mb-1">Core Competencies & Key Skills</h2>
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-slate-700">
                             <div>• Executive Scheduling & Calendar Management</div>
-                            <div>• Digital Reporting & LMS Platform Administration</div>
+                            <div>• Digital Reporting & LMS Platform Admin</div>
                             <div>• Data & Performance Spreadsheet Auditing</div>
-                            <div>• Stakeholder & Parent/Client Communications</div>
+                            <div>• Stakeholder & Client Communications</div>
                             <div>• SOP Compliance & Operational Verification</div>
                             <div>• E-Learning & Interactive Media Design</div>
                         </div>
                     </div>
 
                     <!-- PROFESSIONAL EXPERIENCE -->
-                    <div class="mb-6 space-y-4">
-                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-1">Professional Experience</h2>
+                    <div class="mb-3 space-y-2.5 resume-section">
+                        <h2 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-0.5 mb-0.5">Professional Experience</h2>
                         
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-900">
-                                <span>Center Lead Educator & Administrative Specialist | The Nest Schools</span>
-                                <span>June 2026 – Present</span>
+                            <div class="flex justify-between font-bold text-slate-900">
+                                <span>Preschool Lead Educator & Admin Specialist | The Nest Schools</span>
+                                <span class="text-slate-600 font-normal">June 2026 – Present</span>
                             </div>
-                            <div class="text-[11px] text-slate-500 mb-1">Clayton, NC</div>
-                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                                <li>Utilize enterprise digital reporting applications to document real-time activity metrics, log attendance, and audit developmental milestones with zero error tolerance.</li>
-                                <li>Ensure strict compliance with health, licensing, and operational standard operating procedures (SOPs).</li>
-                                <li>Maintain professional daily communications with parents and internal administrators.</li>
+                            <div class="text-[10px] text-slate-500 mb-0.5">Clayton, NC</div>
+                            <ul class="list-disc list-inside text-slate-700 space-y-0.5">
+                                <li>Utilize enterprise digital reporting applications to document real-time activity metrics and audit milestones with zero error tolerance.</li>
+                                <li>Ensure strict compliance with health, licensure, and operational standard operating procedures (SOPs).</li>
+                                <li>Maintain transparent, professional daily communications with parents and internal leadership.</li>
                             </ul>
                         </div>
 
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-900">
-                                <span>Science Faculty & Data Coordinator | Johnston County Schools</span>
-                                <span>Nov 2023 – Oct 2025</span>
+                            <div class="flex justify-between font-bold text-slate-900">
+                                <span>Science Educator & Data Coordinator | Johnston County Schools</span>
+                                <span class="text-slate-600 font-normal">Nov 2023 – Oct 2025</span>
                             </div>
-                            <div class="text-[11px] text-slate-500 mb-1">Smithfield, NC</div>
-                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                                <li>Tracked, organized, and audited performance metrics using cloud-based spreadsheet applications across large cohorts.</li>
-                                <li>Designed interactive instructional modules utilizing educational websites and digital media.</li>
-                                <li>Maintained structured communications with stakeholders regarding compliance and regular progress updates.</li>
+                            <div class="text-[10px] text-slate-500 mb-0.5">Smithfield, NC</div>
+                            <ul class="list-disc list-inside text-slate-700 space-y-0.5">
+                                <li>Tracked, organized, and audited performance metrics using cloud-based spreadsheet platforms across cohorts.</li>
+                                <li>Designed interactive instructional modules utilizing educational tools and digital media.</li>
+                                <li>Maintained structured communications with stakeholders regarding compliance and milestone updates.</li>
                             </ul>
                         </div>
 
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-900">
-                                <span>Program Coordinator & Faculty | Jacinto P. Elpa National High School</span>
-                                <span>July 2013 – July 2023</span>
+                            <div class="flex justify-between font-bold text-slate-900">
+                                <span>Program Coordinator & Educator | Jacinto P. Elpa National High School</span>
+                                <span class="text-slate-600 font-normal">July 2013 – July 2023</span>
                             </div>
-                            <div class="text-[11px] text-slate-500 mb-1">Surigao del Sur, Philippines</div>
-                            <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <div class="text-[10px] text-slate-500 mb-0.5">Surigao del Sur, Philippines</div>
+                            <ul class="list-disc list-inside text-slate-700 space-y-0.5">
                                 <li>Coordinated school-wide program schedules, managed event logistics, and enforced safety guidelines.</li>
-                                <li>Designed wellness programs and presentations requiring multi-departmental coordination.</li>
+                                <li>Organized recitals and creative presentations requiring multi-departmental coordination.</li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- EDUCATION & LICENSURE -->
-                    <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="grid grid-cols-2 gap-4 text-[10px] resume-section">
                         <div>
-                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Education</h2>
+                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-0.5 mb-1">Education</h2>
                             <p class="font-bold text-slate-900">Master of Arts in Education – PE</p>
-                            <p class="text-slate-600">Philippine Normal University (Completed Academic Req.)</p>
-                            <p class="font-bold text-slate-900 mt-2">Bachelor of Secondary Education</p>
-                            <p class="text-slate-600">Philippine Normal University (2012)</p>
+                            <p class="text-slate-600">Philippine Normal University (Completed Academic Req. 2018)</p>
+                            <p class="font-bold text-slate-900 mt-1">Bachelor of Secondary Education</p>
+                            <p class="text-slate-600">Philippine Normal University (Graduated 2012)</p>
                         </div>
                         <div>
-                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-1 mb-2">Licensure & Certifications</h2>
+                            <h2 class="font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-0.5 mb-1">Licensure & Certifications</h2>
                             <p class="text-slate-700">• Educator Certificate (Science) - NC DPI</p>
                             <p class="text-slate-700">• Educator Certificate (PE) - NC DPI</p>
                             <p class="text-slate-700">• Licensed Professional Teacher (PRC)</p>
